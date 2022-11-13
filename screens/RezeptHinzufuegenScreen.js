@@ -2,10 +2,20 @@ import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, Tou
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
+import * as SQLite from 'expo-sqlite';
 
 
 //Assets
 import Zurueck from '../components/Zurueck';
+
+//Constants
+const dbRezept = SQLite.openDatabase('db.Rezept') 
+
+dbRezept.transaction(tx => {
+  tx.executeSql(
+    'CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, dauer INT)'
+  )
+})
 
 function RezeptHinzufuegenScreen({navigation}){
     return(

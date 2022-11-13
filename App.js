@@ -1,7 +1,6 @@
 import  {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import * as SQLite from 'expo-sqlite'
 
 //Screens
 import HomeScreen from './screens/HomeScreen';
@@ -11,13 +10,7 @@ import RezeptHinzufuegenScreen from './screens/RezeptHinzufuegenScreen';
 //Constants
 const Stack = createNativeStackNavigator();
 
-const db = SQLite.openDatabase('db.Rezept') 
 
-db.transaction(tx => {
-  tx.executeSql(
-    'CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, dauer INT)'
-  )
-})
 
 
 
