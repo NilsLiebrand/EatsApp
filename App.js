@@ -11,8 +11,13 @@ import RezeptHinzufuegenScreen from './screens/RezeptHinzufuegenScreen';
 //Constants
 const Stack = createNativeStackNavigator();
 
-const db = SQLite.openDatabase("db.rezept");
+const db = SQLite.openDatabase('db.Rezept') 
 
+db.transaction(tx => {
+  tx.executeSql(
+    'CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, dauer INT)'
+  )
+})
 
 
 const rezept = {
