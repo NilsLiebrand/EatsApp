@@ -20,18 +20,7 @@ db.transaction(tx => {
 })
 
 
-const rezept = {
-  name: "string",
-  properties: {
-    //bild: 'image'
-    dauer: "",
-    zutaten: "string",
-    mengen: "double",
-    anleitung: "string"
 
-  },
-  primaryKey: "ID",
-}
 
 
 //Navigation between screens and Rendering
