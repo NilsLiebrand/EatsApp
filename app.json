@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Eats",
+    "slug": "Eats",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/markus.jpg",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/markus.jpg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "buildTpye": "apk",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/markus.jpg",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.nilspp.Eats"
+    },
+    "web": {
+      "favicon": "./assets/markus.jpg"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "135447c8-72d4-42b4-adbf-a2af8a307626"
+      }
+    }
+  }
+}
