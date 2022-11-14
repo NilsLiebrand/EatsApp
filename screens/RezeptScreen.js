@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback, Alert} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback, Alert, ImageBackground} from 'react-native';
 import  {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
@@ -18,9 +18,10 @@ function RezeptScreen({ navigation }){
       <Zurueck onPress={() =>navigation.navigate('Home')}></Zurueck>
   
         <ScrollView style = {stylesRezept.scroll}>
+          <ImageBackground source={require('../assets/backgroundImages/Sea.jpg')}>
         
-          <View style={[stylesRezept.weisserHintergrund, stylesRezept.schattenGross, {height: 260}, {marginTop: Constants.statusBarHeight + 70,}]}>
-            <Image source={require('../assets/chickenTikka.png')} style={stylesRezept.bildEssen}></Image>
+          <View style={[stylesRezept.weisserHintergrund, stylesRezept.schattenGross, {height: 260}, {marginTop: Constants.statusBarHeight + 70}, {opacity: 50}]}>
+            <Image source={require('../assets/chickenTikka.png')} style={stylesRezept.bildEssen} ></Image>
           </View>
   
   
@@ -39,6 +40,7 @@ function RezeptScreen({ navigation }){
           <View style={[stylesRezept.weisserHintergrund, stylesRezept.schattenGross, {marginTop: 20}, {height: 500}]}>
             <Text style={stylesRezept.Eingabe}>Anleitung</Text>
           </View>
+          </ImageBackground>
         </ScrollView>
       </SafeAreaView>
     );
@@ -61,6 +63,7 @@ function RezeptScreen({ navigation }){
         width: '90%',
         alignSelf: 'center',
         backgroundColor: 'white',
+        opacity: 0.5,
         borderRadius: 25,
       },
     schattenGross:{
@@ -70,12 +73,14 @@ function RezeptScreen({ navigation }){
     zutaten:{
         height: 50,
         width: '50%',
+        color: 'white',
       },
     mengen:{
         position: 'absolute',
         marginLeft: '50%',
         height: 50,
         width: '50%',
+        color: 'white',
       },
     Eingabe:{
         textAlign: 'center',
