@@ -32,7 +32,7 @@ function RezeptScreen({ navigation }){
   
             </View> 
             <View style={stylesRezept.mengen}>
-              <TextInput style={stylesRezept.Eingabe}>Menge in g {"\n"} (1 Person)</TextInput>
+              <Text style={stylesRezept.Eingabe}>Menge in g</Text>
             </View>
           </View>
   
@@ -63,7 +63,7 @@ function RezeptScreen({ navigation }){
         width: '90%',
         alignSelf: 'center',
         backgroundColor: 'white',
-        opacity: 0.5,
+        backgroundColor: 'rgba(200,200,200,0.5)',
         borderRadius: 25,
       },
     schattenGross:{
@@ -85,6 +85,8 @@ function RezeptScreen({ navigation }){
     Eingabe:{
         textAlign: 'center',
         marginTop: 10,
+        fontSize: 20,
+        color: 'rgba(255,255,255,1)'
       },
     scroll:{
         position: 'absolute',
