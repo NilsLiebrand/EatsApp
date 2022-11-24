@@ -4,6 +4,41 @@ import Constants from 'expo-constants';
 
 import RezeptKlein  from '../components/RezeptKlein';
 
+import * as SQLite from 'expo-sqlite';
+
+//Import Database
+const db = SQLite.openDatabase('db.rezepte');
+
+db.transaction(tx => {
+  tx.executeSql(
+    'CREATE TABLE IF NOT EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Anleitung TEXT)'
+  )
+})
+
+db.transaction(tx => {
+  tx.executeSql(
+    'INSERT INTO Rezepte (Name, Anleitung) values (?,?)',
+    ["Bruh","Nibba"],
+
+    (tx, results) => {
+      console.log('Results', results.rowsAffected);
+    }
+  )
+})
+
+console.log("Start");
+
+db.transaction(tx => {
+  tx.executeSql(
+    "SELECT Name FROM Rezepte",
+
+    (tx, results) => {
+      var len = results.rows.length;
+      console.log('len ', len);
+    }
+  )
+})
+
 function HomeScreen({ navigation }){
     return(
       <SafeAreaView style={stylesHome.container}>

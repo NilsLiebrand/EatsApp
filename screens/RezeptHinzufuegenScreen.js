@@ -1,12 +1,16 @@
-import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback, Alert} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,  Alert} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
+
+import { useState } from 'react';
 
 import * as SQLite from 'expo-sqlite';
 
 
 //Assets
 import Zurueck from '../components/Zurueck';
+import { State } from 'react-native-gesture-handler';
+import React from 'react';
 
 //Constants
 const dbRezept = SQLite.openDatabase(
@@ -14,36 +18,40 @@ const dbRezept = SQLite.openDatabase(
     name: 'Rezepte',
     location: 'default',
   },
+  
   ()=>{},
   error => {console.log(error)}
 ); 
 
-const createTable = () => {
-  dbRezept.transaction((tx) => {
+
+
+function createDatabase() {
+  dbRezept.transaction(tx => {
     tx.executeSql(
-      "CREATE TABLE IF NOT EXISTS"
-      +"Rezepte"
-      +"(ID INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Anleitung TEXT);"
-    )
-  })
+      'CREATE TABLE IF NOT EXISTS ITEMS (ID INTGER PRIMARY KEY NOT NULL, Name TEXT, Anleitung TEXT);'
+    );
+  });
 }
-
-var name;
-var anleitung;
-
-
 
 
 function RezeptHinzufuegenScreen({navigation}){
-  createTable();
-    return(
+  createDatabase();
+  const [name, setName] = useState('');
+  const [anleitung, setAnleitung] = useState('');
+      return(
       <SafeAreaView style={stylesRezeptHinzufuegen.container}>
       
       <Zurueck onPress={() =>navigation.navigate('Home')}></Zurueck>
   
         <ScrollView style = {stylesRezeptHinzufuegen.scroll}>
 
-         <TextInput style={[stylesRezeptHinzufuegen.name, stylesRezeptHinzufuegen.schattenGross]} onChangeText={(text) => name = text}> Name </TextInput>
+         <TextInput 
+
+          style={[stylesRezeptHinzufuegen.name, stylesRezeptHinzufuegen.schattenGross]} 
+          onChangeText={(val) => setName(val)} 
+          placeholder="Name">
+
+         </TextInput>
 
           <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross, {height: 260}, {marginTop: 20}]}>
             
@@ -70,11 +78,11 @@ function RezeptHinzufuegenScreen({navigation}){
   
   
           <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross, {marginTop: 20}, {height: 500}]}>
-            <TextInput style={stylesRezeptHinzufuegen.Eingabe} onChangeText={(text) => anleitung = text}>Anleitung</TextInput>
+            <TextInput style={stylesRezeptHinzufuegen.Eingabe} onChangeText={(val) => setAnleitung(val)} >Anleitung</TextInput>
           </View>
         </ScrollView>
   
-        <TouchableWithoutFeedback onPress={() => addRezept()}>
+        <TouchableWithoutFeedback onPress={ () => addRezept(name, anleitung)}>
         <View style={[stylesRezeptHinzufuegen.rezeptHinzufuegen, stylesRezeptHinzufuegen.schattenGross]}>
           <Image source={require('../assets/Plus100px.png')} style={stylesRezeptHinzufuegen.plus}></Image>
         </View>
@@ -84,20 +92,8 @@ function RezeptHinzufuegenScreen({navigation}){
     )
   }
 
-  async function addRezept(){
-    try {
-    await dbRezept.transaction( (tx) => {
-        tx.executeSql(
-        "INSERT INTO Rezepte (Name, Anleitung) VALUES (?,?)",
-        [name, anleitung]
-      );
-    })
-    }
-    catch (error) {
-      console.log(error);
-    }
-  }
-  
+
+
   async function takePhotoAsync(){
     //alert("Take Photo");
     const {status} = await ImagePicker.requestCameraPermissionsAsync();
@@ -149,6 +145,7 @@ function RezeptHinzufuegenScreen({navigation}){
         color: 'black',
         fontSize: 20,
         textAlign: 'center',
+        Type: 'outlined'
       },
     weisserHintergrund:{
       width: '90%',
