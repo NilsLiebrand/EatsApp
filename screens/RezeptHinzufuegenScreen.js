@@ -13,31 +13,23 @@ import { State } from 'react-native-gesture-handler';
 import React from 'react';
 
 //Constants
-const dbRezept = SQLite.openDatabase(
-  {
-    name: 'Rezepte',
-    location: 'default',
-  },
-  
-  ()=>{},
-  error => {console.log(error)}
-); 
+
+
+//Import Database
 
 
 
-function createDatabase() {
-  dbRezept.transaction(tx => {
-    tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS ITEMS (ID INTGER PRIMARY KEY NOT NULL, Name TEXT, Anleitung TEXT);'
-    );
-  });
-}
+
 
 
 function RezeptHinzufuegenScreen({navigation}){
-  createDatabase();
   const [name, setName] = useState('');
   const [anleitung, setAnleitung] = useState('');
+
+    
+    
+
+    //RENDER
       return(
       <SafeAreaView style={stylesRezeptHinzufuegen.container}>
       
@@ -78,7 +70,9 @@ function RezeptHinzufuegenScreen({navigation}){
   
   
           <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross, {marginTop: 20}, {height: 500}]}>
-            <TextInput style={stylesRezeptHinzufuegen.Eingabe} onChangeText={(val) => setAnleitung(val)} >Anleitung</TextInput>
+            <TextInput style={stylesRezeptHinzufuegen.Eingabe} onChangeText={(Anleitung) => setAnleitung(Anleitung)} 
+             onSubmitEditing={() => {add(text); setText(null);}}>
+                Anleitung</TextInput>
           </View>
         </ScrollView>
   
@@ -91,6 +85,8 @@ function RezeptHinzufuegenScreen({navigation}){
       </SafeAreaView>
     )
   }
+
+  
 
 
 

@@ -1,4 +1,4 @@
-import { StyleSheet,View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback} from 'react-native';
+import { StyleSheet,View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,Button} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
 
@@ -16,30 +16,38 @@ db.transaction(tx => {
 })
 
 db.transaction(tx => {
-  tx.executeSql(
-    'INSERT INTO Rezepte (Name, Anleitung) values (?,?)',
-    ["Bruh","Nibba"],
 
-    (tx, results) => {
-      console.log('Results', results.rowsAffected);
-    }
+  tx.executeSql('INSERT INTO Rezepte (Name, Anleitung) values (?, ?)',
+
+  ["nameN","anleitungN"],
+
+  (tx,results) => {
+    console.log("Was Succesfull");
+  },
+
+  (tx,error) =>{
+    console.log("Error", error);
+  }
+
   )
 })
-
-console.log("Start");
 
 db.transaction(tx => {
   tx.executeSql(
-    "SELECT Name FROM Rezepte",
+    "SELECT Name FROM Rezepte WHERE ID = 1",
+    [], 
+    (tx, { rows }) => console.log(rows._array),
+    (tx, error) => console.log(error)
+    
 
-    (tx, results) => {
-      var len = results.rows.length;
-      console.log('len ', len);
-    }
   )
 })
 
+
 function HomeScreen({ navigation }){
+
+
+
     return(
       <SafeAreaView style={stylesHome.container}>
       <StatusBar style='auto'/>
@@ -56,7 +64,6 @@ function HomeScreen({ navigation }){
         
         
       </ScrollView>
-      
       <TouchableWithoutFeedback onPress={() =>navigation.navigate('RezeptHinzufuegen')}>
         <View style={[stylesHome.rezeptHinzufuegen, stylesHome.schattenGross]}>
           <Image source={require('../assets/Plus100px.png')} style={stylesHome.plus}></Image>
@@ -67,6 +74,10 @@ function HomeScreen({ navigation }){
       </SafeAreaView>
     );
   }
+
+
+
+
 
 
   export default HomeScreen;
