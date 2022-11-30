@@ -1,10 +1,13 @@
 import { StyleSheet,View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,Button} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
+import * as SQLite from 'expo-sqlite';
 
+
+//Components
 import RezeptKlein  from '../components/RezeptKlein';
 
-import * as SQLite from 'expo-sqlite';
+
 
 //Import Database
 const db = SQLite.openDatabase('db.rezepte');
@@ -12,14 +15,19 @@ const db = SQLite.openDatabase('db.rezepte');
 db.transaction(tx => {
   tx.executeSql(
     'CREATE TABLE IF NOT EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Anleitung TEXT)'
-  )
+  ),
+  (tx,results) => {
+    console.log(results)
+  }
 })
+
+console.log("h");
 
 db.transaction(tx => {
 
   tx.executeSql('INSERT INTO Rezepte (Name, Anleitung) values (?, ?)',
 
-  ["nameN","anleitungN"],
+  ["Hallo","HUIU"],
 
   (tx,results) => {
     console.log("Was Succesfull");
@@ -32,9 +40,10 @@ db.transaction(tx => {
   )
 })
 
+
 db.transaction(tx => {
   tx.executeSql(
-    "SELECT Name FROM Rezepte WHERE ID = 1",
+    "SELECT Name FROM Rezepte",
     [], 
     (tx, { rows }) => console.log(rows._array),
     (tx, error) => console.log(error)
