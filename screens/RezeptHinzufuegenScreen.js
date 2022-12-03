@@ -16,17 +16,42 @@ import React from 'react';
 
 
 //Import Database
+const db = SQLite.openDatabase('db.rezepte');
 
 
 
+function insertObjekt(objekt, input)
+{
+db.transaction(tx => {
+
+  tx.executeSql('INSERT INTO Rezepte (?) values (?)',
+
+  [objekt, input],
+
+  (tx,results) => {
+    console.log("Was Succesfull" , objekt, "   ", input);
+  },
+
+  (tx,error) =>{
+    console.log("Error", error);
+  }
+
+  )
+})
+}
 
 
 
 function RezeptHinzufuegenScreen({navigation}){
   const [name, setName] = useState('');
-  const [anleitung, setAnleitung] = useState('');
+  const [zutat, setZutat] = useState('Default Zutat');
+  const [anleitung, setAnleitung] = useState('Default Anleitung bla bla bla');
 
-    
+  
+  const changedName = () =>
+  {
+    insertObjekt("Name", {name})
+  }
     
 
     //RENDER
@@ -40,7 +65,8 @@ function RezeptHinzufuegenScreen({navigation}){
          <TextInput 
 
           style={[stylesRezeptHinzufuegen.name, stylesRezeptHinzufuegen.schattenGross]} 
-          onChangeText={(val) => setName(val)} 
+          onChangeText = {val => setName(val)}
+          onSumbitEditing={changedName} 
           placeholder="Name">
 
          </TextInput>
@@ -61,10 +87,10 @@ function RezeptHinzufuegenScreen({navigation}){
           <View style={stylesRezeptHinzufuegen.informationen}></View>
           <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross,{marginTop: 20}]}>
             <View style={stylesRezeptHinzufuegen.zutaten}>
-              <TextInput style={stylesRezeptHinzufuegen.Eingabe}>Zutaten</TextInput>
+              <TextInput style={stylesRezeptHinzufuegen.Eingabe} placeholder ="Zutaten"></TextInput>
             </View> 
             <View style={stylesRezeptHinzufuegen.mengen}>
-              <TextInput style={stylesRezeptHinzufuegen.Eingabe}>Menge in g {"\n"} (1 Person)</TextInput>
+              <TextInput style={stylesRezeptHinzufuegen.Eingabe} keyboardType='numeric' placeholder ="Menge in g (1 Person)"></TextInput>
             </View>
           </View>
   
@@ -76,7 +102,7 @@ function RezeptHinzufuegenScreen({navigation}){
           </View>
         </ScrollView>
   
-        <TouchableWithoutFeedback onPress={ () => addRezept(name, anleitung)}>
+        <TouchableWithoutFeedback>
         <View style={[stylesRezeptHinzufuegen.rezeptHinzufuegen, stylesRezeptHinzufuegen.schattenGross]}>
           <Image source={require('../assets/Plus100px.png')} style={stylesRezeptHinzufuegen.plus}></Image>
         </View>

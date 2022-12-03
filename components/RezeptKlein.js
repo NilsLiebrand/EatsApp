@@ -20,14 +20,14 @@ function RezeptKlein(props){
           </View>
 
           <View style={styles.attribute}>
-            <Text style={styles.attribut}>{props.kochZeit} min</Text>
-            <Text style={styles.attribut}>{props.kalorien} kcal</Text>
-            <Text style={styles.attribut}>{props.protein} g</Text>
-            <Text style={styles.attribut}>{props.land}</Text>
+            <Text style={styles.attribut}>{props.rezeptKochZeit} min</Text>
+            <Text style={styles.attribut}>{props.rezeptKalorien} kcal</Text>
+            <Text style={styles.attribut}>{props.rezeptProtein} g</Text>
+            <Text style={styles.attribut}>{props.rezeptLand}</Text>
           </View>
         </View>
 
-        <Text style={styles.anleitung}>{props.anleitung}</Text>
+        <Text style={styles.anleitung}>{props.rezeptAnleitung}</Text>
         
       </TouchableOpacity>
     );

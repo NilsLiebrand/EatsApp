@@ -1,4 +1,5 @@
 import { StyleSheet,View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,Button} from 'react-native';
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
 import * as SQLite from 'expo-sqlite';
@@ -12,48 +13,51 @@ import RezeptKlein  from '../components/RezeptKlein';
 //Import Database
 const db = SQLite.openDatabase('db.rezepte');
 
+// db.transaction(tx => {
+//   tx.executeSql(
+//     "DROP TABLE Rezepte",
+//     [], 
+//     (tx, result) =>
+//     {
+//       console.log(result);
+//     } ,
+//     (tx, error) => console.log(error)
+    
+
+//   )
+// })
+
 db.transaction(tx => {
   tx.executeSql(
-    'CREATE TABLE IF NOT EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Anleitung TEXT)'
+    'CREATE TABLE IF NOT EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Zutat TEXT, Anleitung TEXT)'
   ),
   (tx,results) => {
     console.log(results)
   }
 })
 
-console.log("h");
 
-db.transaction(tx => {
-
-  tx.executeSql('INSERT INTO Rezepte (Name, Anleitung) values (?, ?)',
-
-  ["Hallo","HUIU"],
-
-  (tx,results) => {
-    console.log("Was Succesfull");
-  },
-
-  (tx,error) =>{
-    console.log("Error", error);
-  }
-
-  )
-})
-
-
+function getRezept (kategorie, id)  {
 db.transaction(tx => {
   tx.executeSql(
-    "SELECT Name FROM Rezepte",
-    [], 
-    (tx, { rows }) => console.log(rows._array),
+    "SELECT ? FROM Rezepte WHERE id = ?",
+    [kategorie, id], 
+    (tx, { rows }) =>
+    {
+      for(let i = 0; i < rows.length; i++){
+      console.log(rows._array[i].Name)
+      }
+    } ,
     (tx, error) => console.log(error)
     
 
   )
 })
+};
 
 
 function HomeScreen({ navigation }){
+
 
 
 
@@ -67,12 +71,14 @@ function HomeScreen({ navigation }){
   
       <ScrollView style={stylesHome.scrollView}>
         
-        <RezeptKlein onPress={() =>navigation.navigate('Rezept')} rezeptName='Chicken Tikka'></RezeptKlein>
+        <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
         <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
         <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
         
         
       </ScrollView>
+
+
       <TouchableWithoutFeedback onPress={() =>navigation.navigate('RezeptHinzufuegen')}>
         <View style={[stylesHome.rezeptHinzufuegen, stylesHome.schattenGross]}>
           <Image source={require('../assets/Plus100px.png')} style={stylesHome.plus}></Image>
