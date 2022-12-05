@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,  Alert} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,  Alert, Button} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
@@ -20,38 +20,49 @@ const db = SQLite.openDatabase('db.rezepte');
 
 
 
-function insertObjekt(objekt, input)
-{
-db.transaction(tx => {
-
-  tx.executeSql('INSERT INTO Rezepte (?) values (?)',
-
-  [objekt, input],
-
-  (tx,results) => {
-    console.log("Was Succesfull" , objekt, "   ", input);
-  },
-
-  (tx,error) =>{
-    console.log("Error", error);
-  }
-
-  )
-})
-}
-
-
 
 function RezeptHinzufuegenScreen({navigation}){
   const [name, setName] = useState('');
   const [zutat, setZutat] = useState('Default Zutat');
   const [anleitung, setAnleitung] = useState('Default Anleitung bla bla bla');
+  const [bild, setBild] = useState();
 
   
-  const changedName = () =>
-  {
-    insertObjekt("Name", {name})
-  }
+  //Camera/ Image Picker
+  async function takePhotoAsync(){
+      //alert("Take Photo");
+      const {status} = await ImagePicker.requestCameraPermissionsAsync();
+      const isSuccessful = status === 'granted';
+      
+  
+      if(!isSuccessful){
+        alert("Kamerazugriff nicht gestattet");
+        return;
+      }
+    
+      const image = await ImagePicker.launchCameraAsync();
+      if (!image.canceled){
+        //proceed with image
+        console.log("Image File:", image.assets[0].uri);
+        setBild(image.assets[0].uri);
+      }
+    } 
+    async function choosePhotoAsync(){
+      //alert("Choose Photo");
+      const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const isSuccessful = status === 'granted';
+    
+      if(!isSuccessful){
+        alert("Dateizugriff nicht gestattet");
+      }
+    
+      const image = await ImagePicker.launchImageLibraryAsync();
+      if(!image.canceled){
+        //proceed with image
+        console.log("Image File: ",image.assets[0].uri);
+        setBild(image.assets[0].uri);
+      }
+    } 
     
 
     //RENDER
@@ -65,11 +76,11 @@ function RezeptHinzufuegenScreen({navigation}){
          <TextInput 
 
           style={[stylesRezeptHinzufuegen.name, stylesRezeptHinzufuegen.schattenGross]} 
-          onChangeText = {val => setName(val)}
-          onSumbitEditing={changedName} 
+          onChangeText={(val) => setName(val)}
           placeholder="Name">
 
          </TextInput>
+
 
           <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross, {height: 260}, {marginTop: 20}]}>
             
@@ -87,7 +98,7 @@ function RezeptHinzufuegenScreen({navigation}){
           <View style={stylesRezeptHinzufuegen.informationen}></View>
           <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross,{marginTop: 20}]}>
             <View style={stylesRezeptHinzufuegen.zutaten}>
-              <TextInput style={stylesRezeptHinzufuegen.Eingabe} placeholder ="Zutaten"></TextInput>
+              <TextInput style={stylesRezeptHinzufuegen.Eingabe} placeholder ="Zutaten" onChangeText={(val) => setZutat(val)}></TextInput>
             </View> 
             <View style={stylesRezeptHinzufuegen.mengen}>
               <TextInput style={stylesRezeptHinzufuegen.Eingabe} keyboardType='numeric' placeholder ="Menge in g (1 Person)"></TextInput>
@@ -96,13 +107,11 @@ function RezeptHinzufuegenScreen({navigation}){
   
   
           <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross, {marginTop: 20}, {height: 500}]}>
-            <TextInput style={stylesRezeptHinzufuegen.Eingabe} onChangeText={(Anleitung) => setAnleitung(Anleitung)} 
-             onSubmitEditing={() => {add(text); setText(null);}}>
-                Anleitung</TextInput>
+            <TextInput style={stylesRezeptHinzufuegen.Eingabe} placeholder = "Anleitung"  onChangeText={(val) => setAnleitung(val)}></TextInput>
           </View>
         </ScrollView>
   
-        <TouchableWithoutFeedback>
+        <TouchableWithoutFeedback onPress={()=>insertRezept(name,zutat,anleitung,bild)}>
         <View style={[stylesRezeptHinzufuegen.rezeptHinzufuegen, stylesRezeptHinzufuegen.schattenGross]}>
           <Image source={require('../assets/Plus100px.png')} style={stylesRezeptHinzufuegen.plus}></Image>
         </View>
@@ -112,40 +121,92 @@ function RezeptHinzufuegenScreen({navigation}){
     )
   }
 
+
+  function insertRezept(nameN, zutatN, anleitungN, bildN)
+  {
+    console.log(nameN, "  ", zutatN, "  ", anleitungN, "  ",bildN);
+  db.transaction(tx => {
+
+      tx.executeSql('INSERT INTO Rezepte (Name, Zutat, Anleitung, Bild) values (?,?,?,?)',
+
+        [nameN, zutatN, anleitungN, bildN],
+
+        (tx, results) => {
+          console.log(results, "   ", tx);
+        },
+
+        (tx, error) => {
+          console.log("Error", error);
+        }
+
+      );
+    })
+
+
+    db.transaction(tx => {
+
+      tx.executeSql('SELECT* FROM Rezepte',
+  
+      [],
+  
+      (tx,{rows}) => {
+        Alert.alert("SPEICHERN ERFOLGREICH");
+         for(let a = 0; a < rows.length; a++)
+         {
+          console.log(rows._array[a]);
+         }
+      },
+  
+      (tx,error) =>{
+        console.log("Error ", error);
+        Alert.alert("Error ",error);
+      }
+  
+        )
+      })
+  }
+
+  
+
+  
   
 
 
 
-  async function takePhotoAsync(){
-    //alert("Take Photo");
-    const {status} = await ImagePicker.requestCameraPermissionsAsync();
-    const isSuccessful = status === 'granted';
+  // async function takePhotoAsync(){
+  //   //alert("Take Photo");
+  //   const {status} = await ImagePicker.requestCameraPermissionsAsync();
+  //   const isSuccessful = status === 'granted';
+    
+
+  //   if(!isSuccessful){
+  //     alert("Kamerazugriff nicht gestattet");
+  //     return;
+  //   }
   
-    if(!isSuccessful){
-      alert("Kamera nicht gestattet");
-      return;
-    }
+  //   const image = await ImagePicker.launchCameraAsync();
+  //   if (!image.canceled){
+  //     //proceed with image
+  //     console.log("Image File:", image.assets[0].uri);
+  //     return image.assets[0].uri;
+  //   }
+  // } 
+  // async function choosePhotoAsync(){
+  //   //alert("Choose Photo");
+  //   const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //   const isSuccessful = status === 'granted';
   
-    const image = await ImagePicker.launchCameraAsync();
-    if (!image.canceled){
-      //proceed with image
-    }
-  } 
-  async function choosePhotoAsync(){
-    //alert("Choose Photo");
-    const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    const isSuccessful = status === 'granted';
+  //   if(!isSuccessful){
+  //     alert("Dateizugriff nicht gestattet");
+  //   }
   
-    if(!isSuccessful){
-      alert("Dateizugriff nicht gestattet");
-      return;
-    }
-  
-    const image = await ImagePicker.launchImageLibraryAsync();
-    if(!image.canceled){
-      //proceed with image
-    }
-  } 
+  //   const image = await ImagePicker.launchImageLibraryAsync();
+  //   if(!image.canceled){
+  //     //proceed with image
+  //     console.log("Image File: ",image.assets[0].uri);
+  //     return image.assets[0].uri;
+  //   }
+  // } 
 
   export default RezeptHinzufuegenScreen;
 
@@ -155,7 +216,6 @@ function RezeptHinzufuegenScreen({navigation}){
         MarginTop: Constants.statusBarHeight,
       },
       name:{
-        //position: 'absolute',
         width: '90%',
         height: 70,
         backgroundColor: 'white',

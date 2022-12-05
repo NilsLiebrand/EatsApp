@@ -29,49 +29,50 @@ const db = SQLite.openDatabase('db.rezepte');
 
 db.transaction(tx => {
   tx.executeSql(
-    'CREATE TABLE IF NOT EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Zutat TEXT, Anleitung TEXT)'
+    'CREATE TABLE IF EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Zutat TEXT, Anleitung TEXT, Bild TEXT)'
   ),
   (tx,results) => {
     console.log(results)
   }
+  (tx,error) => {
+    console.log(error)
+  }
 })
 
 
-function getRezept (kategorie, id)  {
-db.transaction(tx => {
-  tx.executeSql(
-    "SELECT ? FROM Rezepte WHERE id = ?",
-    [kategorie, id], 
-    (tx, { rows }) =>
-    {
-      for(let i = 0; i < rows.length; i++){
-      console.log(rows._array[i].Name)
-      }
-    } ,
-    (tx, error) => console.log(error)
-    
 
-  )
-})
-};
 
 
 function HomeScreen({ navigation }){
+  const [name, setName] = useState();
 
 
+  
 
+    db.transaction(tx => {
+      tx.executeSql(
+        "SELECT Name FROM Rezepte WHERE id = ?",
+        [2], 
+        (tx, { rows }) =>
+        {
+          console.log("Name: ",rows._array[0].Name);
+          setName(rows._array[0].Name);
+        } ,
+        (tx, error) => console.log(error)
+        
+    
+      )
+    })
 
     return(
       <SafeAreaView style={stylesHome.container}>
       <StatusBar style='auto'/>
       
-  
       
       <TextInput style={[stylesHome.searchBar, stylesHome.schattenGross]}></TextInput>
   
       <ScrollView style={stylesHome.scrollView}>
-        
-        <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
+        <RezeptKlein onPress={() =>navigation.navigate('Rezept')} rezeptName = {name}></RezeptKlein>
         <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
         <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
         
@@ -84,12 +85,11 @@ function HomeScreen({ navigation }){
           <Image source={require('../assets/Plus100px.png')} style={stylesHome.plus}></Image>
         </View>
       </TouchableWithoutFeedback>
-      
+
       
       </SafeAreaView>
     );
   }
-
 
 
 
