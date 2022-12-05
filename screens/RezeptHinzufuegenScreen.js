@@ -3,14 +3,16 @@ import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
 import { useState } from 'react';
-
+import React from 'react';
 import * as SQLite from 'expo-sqlite';
 
 
 //Assets
 import Zurueck from '../components/Zurueck';
-import { State } from 'react-native-gesture-handler';
-import React from 'react';
+import Hinzufuegen  from '../components/Hinzufuegen';
+
+
+
 
 //Constants
 
@@ -111,11 +113,7 @@ function RezeptHinzufuegenScreen({navigation}){
           </View>
         </ScrollView>
   
-        <TouchableWithoutFeedback onPress={()=>insertRezept(name,zutat,anleitung,bild)}>
-        <View style={[stylesRezeptHinzufuegen.rezeptHinzufuegen, stylesRezeptHinzufuegen.schattenGross]}>
-          <Image source={require('../assets/Plus100px.png')} style={stylesRezeptHinzufuegen.plus}></Image>
-        </View>
-        </TouchableWithoutFeedback>
+        <Hinzufuegen onPress={()=>insertRezept(name,zutat,anleitung,bild)}></Hinzufuegen>
   
       </SafeAreaView>
     )

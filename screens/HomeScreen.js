@@ -29,7 +29,7 @@ const db = SQLite.openDatabase('db.rezepte');
 
 db.transaction(tx => {
   tx.executeSql(
-    'CREATE TABLE IF EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Zutat TEXT, Anleitung TEXT, Bild TEXT)'
+    'CREATE TABLE IF NOT EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Zutat TEXT, Anleitung TEXT, Bild TEXT)'
   ),
   (tx,results) => {
     console.log(results)

@@ -100,4 +100,4 @@ function RezeptKlein(props){
 
   });
 
-export default RezeptKlein
+export default RezeptKlein;
