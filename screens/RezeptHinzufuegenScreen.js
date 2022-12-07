@@ -10,6 +10,7 @@ import * as SQLite from 'expo-sqlite';
 //Assets
 import Zurueck from '../components/Zurueck';
 import Hinzufuegen  from '../components/Hinzufuegen';
+import { ZoomInLeft } from 'react-native-reanimated';
 
 
 
@@ -95,6 +96,16 @@ function RezeptHinzufuegenScreen({navigation}){
             </TouchableWithoutFeedback>
   
           </View>
+
+          <View style={stylesRezeptHinzufuegen.eigenschaften}>
+            <View style={stylesRezeptHinzufuegen.eigenschaftenObereReihe}>
+              <TextInput style={{backgroundColor: "grey", width: "33%"}}></TextInput>
+              <TextInput style={{backgroundColor: "grey",  width: "33%",  flex : 2}}></TextInput>
+              <TextInput style={{backgroundColor: "grey", width: "33%",  flex : 2}}></TextInput>
+            </View>
+            
+            <TextInput></TextInput>
+          </View>
   
   
           <View style={stylesRezeptHinzufuegen.informationen}></View>
@@ -167,44 +178,7 @@ function RezeptHinzufuegenScreen({navigation}){
   
 
   
-  
 
-
-
-  // async function takePhotoAsync(){
-  //   //alert("Take Photo");
-  //   const {status} = await ImagePicker.requestCameraPermissionsAsync();
-  //   const isSuccessful = status === 'granted';
-    
-
-  //   if(!isSuccessful){
-  //     alert("Kamerazugriff nicht gestattet");
-  //     return;
-  //   }
-  
-  //   const image = await ImagePicker.launchCameraAsync();
-  //   if (!image.canceled){
-  //     //proceed with image
-  //     console.log("Image File:", image.assets[0].uri);
-  //     return image.assets[0].uri;
-  //   }
-  // } 
-  // async function choosePhotoAsync(){
-  //   //alert("Choose Photo");
-  //   const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //   const isSuccessful = status === 'granted';
-  
-  //   if(!isSuccessful){
-  //     alert("Dateizugriff nicht gestattet");
-  //   }
-  
-  //   const image = await ImagePicker.launchImageLibraryAsync();
-  //   if(!image.canceled){
-  //     //proceed with image
-  //     console.log("Image File: ",image.assets[0].uri);
-  //     return image.assets[0].uri;
-  //   }
-  // } 
 
   export default RezeptHinzufuegenScreen;
 
@@ -268,19 +242,14 @@ function RezeptHinzufuegenScreen({navigation}){
       width: '100%',
       height: '100%',
     },
-    rezeptHinzufuegen:{
-        position: 'absolute',
-        width: '90%',
-        height: 70,
-        borderRadius: 100,
-        alignItems: 'center',
-        backgroundColor: '#4ECAFF',
-        justifyContent: 'center',
-        alignSelf: 'center',
-        bottom: 20,
-        zIndex: 2,
-      },
-      plus:{
-        resizeMode: 'center',
-      }
+    eigenschaften:{
+      marginTop: 20,
+      width: '90%',
+      alignSelf: 'center',
+    },
+    eigenschaftenObereReihe:{
+      flexDirection: "row",
+      justifyContent: 'space-between',
+      alignContent: "stretch",
+    },
   });

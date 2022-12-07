@@ -1,4 +1,4 @@
-import { StyleSheet,View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,Button} from 'react-native';
+import { RefreshControl, StyleSheet,View, ScrollView, SafeAreaView, Image, TextInput , Text, TouchableOpacity} from 'react-native';
 import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
@@ -6,7 +6,8 @@ import * as SQLite from 'expo-sqlite';
 
 
 //Components
-import RezeptKlein  from '../components/RezeptKlein';
+import Hinzufuegen from '../components/Hinzufuegen';
+import { FlatList } from 'react-native-gesture-handler';
 
 
 
@@ -40,29 +41,100 @@ db.transaction(tx => {
 })
 
 
+
+
+
+
+
+
+/* <ScrollView style={stylesHome.scrollView}>
+        <RezeptKlein onPress={() =>navigation.navigate('Rezept')} rezeptName = {name}></RezeptKlein>
+        <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
+        
+        
+      </ScrollView> */
+
 //sdfsdf
+
+const rezeptKarten = [
+{
+     id : "100000",
+     Name: "UGUR",
+     Bild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540nilspp%252FEats/ImagePicker/4563ba8d-f5ef-435b-94a8-399058ad60aa.jpeg",
+     KochZeit: "20",
+     Kalorien: "399",
+     Protein: "24",
+     Land: "Australien",
+     Anleitung: "jöakdjföaksjöfjasdkl",
+},
+];
+
+
+//<TouchableOpacity style={[styles.rezeptKleinBackground, styles.schattenGross]} onPress={rezept.onPress}>
+
+const RezeptKlein = ( { item } ) => (
+  
+    <View style={[styles.rezeptKleinBackground, styles.schattenGross]}>
+        <Text style={styles.ueberschrift}>{item.Name}</Text>
+      
+       <Image source={{ uri: item.Bild}} style={[styles.bild,styles.schattenGross]}></Image> 
+
+        
+
+        <View style={styles.informationen}>
+          <View style={styles.icons}>
+            <Image source={require('../assets/Time50px.png')} style={styles.icon}></Image>
+            <Image source={require('../assets/Energy50px.png')} style={styles.icon}></Image>
+            <Image source={require('../assets/Protein50px.png')} style={styles.icon}></Image>
+            <Image source={require('../assets/map50px.png')} style={styles.icon}></Image>
+          </View>
+
+          <View style={styles.attribute}>
+            <Text style={styles.attribut}>{item.KochZeit} min</Text>
+            <Text style={styles.attribut}>{item.Kalorien} kcal</Text>
+            <Text style={styles.attribut}>{item.Protein} g</Text>
+            <Text style={styles.attribut}>{item.Land}</Text>
+          </View>
+        </View>
+
+        <Text style={styles.anleitung}>{item.Anleitung}</Text>
+      </View>
+        
+)
+
+function getRezept() 
+{
+
+
+  db.transaction(tx => {
+
+    tx.executeSql('SELECT* FROM Rezepte',
+
+    [],
+
+    (tx,{rows}) => {
+      for(let i = 0; i < rows.length; i++)
+      {
+        console.log(rows._array[i]);
+        rezeptKarten.push(rows._array[i]);
+      }
+    },
+
+    (tx,error) =>{
+      console.log("Error ", error);
+      Alert.alert("Error ",error);
+    }
+
+      )
+    })
+
+    return rezeptKarten;
+};
+
 
 
 function HomeScreen({ navigation }){
-  const [name, setName] = useState();
 
-
-  
-
-    db.transaction(tx => {
-      tx.executeSql(
-        "SELECT Name FROM Rezepte WHERE id = ?",
-        [2], 
-        (tx, { rows }) =>
-        {
-          console.log("Name: ",rows._array[0].Name);
-          setName(rows._array[0].Name);
-        } ,
-        (tx, error) => console.log(error)
-        
-    
-      )
-    })
 
     return(
       <SafeAreaView style={stylesHome.container}>
@@ -70,21 +142,22 @@ function HomeScreen({ navigation }){
       
       
       <TextInput style={[stylesHome.searchBar, stylesHome.schattenGross]}></TextInput>
-  
-      <ScrollView style={stylesHome.scrollView}>
-        <RezeptKlein onPress={() =>navigation.navigate('Rezept')} rezeptName = {name}></RezeptKlein>
-        <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
-        <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
-        
-        
-      </ScrollView>
+      
+      <FlatList 
+      style={stylesHome.scrollView}
+      data = {getRezept()}
+      renderItem={({item}) => (
+        <TouchableOpacity  onPress={() =>  navigation.navigate('Rezept')}>
+          <RezeptKlein item = {item}></RezeptKlein>
+        </TouchableOpacity>
+      )}
+      onEndReachedThreshold={10}
+      keyExtractor={item => item.id}/>
+      
 
 
-      <TouchableWithoutFeedback onPress={() =>navigation.navigate('RezeptHinzufuegen')}>
-        <View style={[stylesHome.rezeptHinzufuegen, stylesHome.schattenGross]}>
-          <Image source={require('../assets/Plus100px.png')} style={stylesHome.plus}></Image>
-        </View>
-      </TouchableWithoutFeedback>
+      <Hinzufuegen onPress={() =>navigation.navigate('RezeptHinzufuegen')}/>
+
 
       
       </SafeAreaView>
@@ -141,4 +214,72 @@ function HomeScreen({ navigation }){
     plus:{
       resizeMode: 'center',
     }
+  });
+
+
+  const styles = StyleSheet.create({
+    rezeptKleinBackground:{
+        width: '90%',
+        height: 260,
+        borderRadius: 25,
+        backgroundColor: 'white',
+        marginTop: 20,
+        alignSelf: 'center',
+        
+      },
+      schattenGross:{
+        elevation: 10,
+        shadowColor: '#000000',
+      },
+      bild:{
+        borderRadius: 20,
+        height: '55%',
+        width: '50%',
+        resizeMode: 'cover',
+        marginTop: 10,
+        marginLeft: 10,
+        overflow: 'visible',
+      },
+      ueberschrift:{
+        position: 'absolute',
+        width: '50%',
+        marginTop: 10,
+        marginLeft: '50%',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 15,
+      },
+      informationen:{
+        position: 'absolute',
+        height: '50%',
+        width: '40%',
+        marginTop: 30,
+        marginLeft: '55%',
+        },
+        icons:{
+          width: '30%',
+          height: '100%',
+          justifyContent: 'space-evenly',
+          paddingVertical: 10, 
+        },
+        icon:{
+          resizeMode: 'center',
+        },
+        attribute:{
+          position: 'absolute',
+          justifyContent: 'space-between',
+          paddingVertical: 8,
+          width: '70%',
+          height: '100%',
+          marginLeft: '30%',
+        },
+        attribut:{
+          alignSelf:'center',
+          color: '#959595',
+        },
+      anleitung:{
+        marginLeft: 10,
+        marginTop: 10,
+      }
+
   });
