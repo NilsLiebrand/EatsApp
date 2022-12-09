@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,  Alert, Button} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,  Alert, TouchableOpacity} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
@@ -26,9 +26,14 @@ const db = SQLite.openDatabase('db.rezepte');
 
 function RezeptHinzufuegenScreen({navigation}){
   const [name, setName] = useState('');
-  const [zutat, setZutat] = useState('Default Zutat');
-  const [anleitung, setAnleitung] = useState('Default Anleitung bla bla bla');
-  const [bild, setBild] = useState();
+  const [bild, setBild] = useState('');
+  const [zeit, setZeit] = useState('');
+  const [kalorien, setKalorien] = useState('');
+  const [protein, setProtein] = useState('');
+  const [land, setLand] = useState('');
+  const [zutat, setZutat] = useState('');
+  const [anleitung, setAnleitung] = useState('Kein Anleitung');
+
 
   
   //Camera/ Image Picker
@@ -90,7 +95,7 @@ function RezeptHinzufuegenScreen({navigation}){
             <TouchableWithoutFeedback onPress={() => takePhotoAsync()}>
               <Image source={require('../assets/camera100px.png')} style={stylesRezeptHinzufuegen.kameraView}/>
             </TouchableWithoutFeedback>
-  
+
             <TouchableWithoutFeedback onPress={() => choosePhotoAsync()}>
               <Image source={require('../assets/folder100px.png')} style={stylesRezeptHinzufuegen.ordnerView}/>
             </TouchableWithoutFeedback>
@@ -99,12 +104,12 @@ function RezeptHinzufuegenScreen({navigation}){
 
           <View style={stylesRezeptHinzufuegen.eigenschaften}>
             <View style={stylesRezeptHinzufuegen.eigenschaftenObereReihe}>
-              <TextInput style={{backgroundColor: "grey", width: "33%"}}></TextInput>
-              <TextInput style={{backgroundColor: "grey",  width: "33%",  flex : 2}}></TextInput>
-              <TextInput style={{backgroundColor: "grey", width: "33%",  flex : 2}}></TextInput>
+              <TextInput style={{width: "33%", textAlign: 'center'}} placeholder= "Zeit (min)" keyboardType='numeric' onChangeText={(val) => setZeit(val)}></TextInput>
+              <TextInput style={{ width: "33%", textAlign: 'center'}} placeholder="kcal" keyboardType='numeric' onChangeText={(val) => setKalorien(val)}></TextInput>
+              <TextInput style={{width: "33%", textAlign: 'center'}} placeholder="Protein (g)" keyboardType='numeric' onChangeText={(val) => setProtein(val)}></TextInput>
             </View>
             
-            <TextInput></TextInput>
+            <TextInput style={{width: "33%", textAlign: 'center'}} placeholder= "Land" onChangeText={(val) => setLand(val)}></TextInput>
           </View>
   
   
@@ -124,21 +129,21 @@ function RezeptHinzufuegenScreen({navigation}){
           </View>
         </ScrollView>
   
-        <Hinzufuegen onPress={()=>insertRezept(name,zutat,anleitung,bild)}></Hinzufuegen>
+        <Hinzufuegen onPress={()=>insertRezept(name,bild,zeit,kalorien,protein,land,zutat,anleitung)}></Hinzufuegen>
   
       </SafeAreaView>
     )
   }
 
 
-  function insertRezept(nameN, zutatN, anleitungN, bildN)
+  function insertRezept(nameN, bildN, zutatN, zeitN, kalorienN, proteinN, landN, anleitungN)
   {
     console.log(nameN, "  ", zutatN, "  ", anleitungN, "  ",bildN);
   db.transaction(tx => {
 
-      tx.executeSql('INSERT INTO Rezepte (Name, Zutat, Anleitung, Bild) values (?,?,?,?)',
+      tx.executeSql('INSERT INTO Rezepte (Name, Bild , Zeit, Kalorien, Protein, Land ,Zutat, Anleitung) values (?,?,?,?,?,?,?,?)',
 
-        [nameN, zutatN, anleitungN, bildN],
+        [nameN, bildN, zeitN, kalorienN, proteinN, landN, zutatN, anleitungN, ],
 
         (tx, results) => {
           console.log(results, "   ", tx);
@@ -186,6 +191,7 @@ function RezeptHinzufuegenScreen({navigation}){
     container:{
         flex: 1,
         MarginTop: Constants.statusBarHeight,
+        backgroundColor: 'white'
       },
       name:{
         width: '90%',

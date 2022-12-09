@@ -30,7 +30,7 @@ const db = SQLite.openDatabase('db.rezepte');
 
 db.transaction(tx => {
   tx.executeSql(
-    'CREATE TABLE IF NOT EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Zutat TEXT, Anleitung TEXT, Bild TEXT)'
+    'CREATE TABLE IF NOT EXISTS Rezepte (id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Bild TEXT, Zeit INTEGER, Kalorien INTEGER, Protein INTEGER, Land TEXT, Zutat TEXT, Anleitung TEXT)'
   ),
   (tx,results) => {
     console.log(results)
@@ -61,10 +61,11 @@ const rezeptKarten = [
      id : "100000",
      Name: "UGUR",
      Bild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540nilspp%252FEats/ImagePicker/4563ba8d-f5ef-435b-94a8-399058ad60aa.jpeg",
-     KochZeit: "20",
+     Zeit: "20",
      Kalorien: "399",
      Protein: "24",
      Land: "Australien",
+     Zutat: "",
      Anleitung: "jöakdjföaksjöfjasdkl",
 },
 ];
@@ -90,7 +91,7 @@ const RezeptKlein = ( { item } ) => (
           </View>
 
           <View style={styles.attribute}>
-            <Text style={styles.attribut}>{item.KochZeit} min</Text>
+            <Text style={styles.attribut}>{item.Zeit} min</Text>
             <Text style={styles.attribut}>{item.Kalorien} kcal</Text>
             <Text style={styles.attribut}>{item.Protein} g</Text>
             <Text style={styles.attribut}>{item.Land}</Text>
