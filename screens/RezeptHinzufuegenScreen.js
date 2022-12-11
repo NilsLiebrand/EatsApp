@@ -136,14 +136,14 @@ function RezeptHinzufuegenScreen({navigation}){
   }
 
 
-  function insertRezept(nameN, bildN, zutatN, zeitN, kalorienN, proteinN, landN, anleitungN)
+  function insertRezept(nameN, bildN, zeitN, kalorienN, proteinN, landN, zutatN, anleitungN)
   {
     console.log(nameN, "  ", zutatN, "  ", anleitungN, "  ",bildN);
   db.transaction(tx => {
 
       tx.executeSql('INSERT INTO Rezepte (Name, Bild , Zeit, Kalorien, Protein, Land ,Zutat, Anleitung) values (?,?,?,?,?,?,?,?)',
 
-        [nameN, bildN, zeitN, kalorienN, proteinN, landN, zutatN, anleitungN, ],
+        [nameN, bildN, zeitN, kalorienN, proteinN, landN, zutatN, anleitungN,],
 
         (tx, results) => {
           console.log(results, "   ", tx);

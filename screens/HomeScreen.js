@@ -103,8 +103,9 @@ const RezeptKlein = ( { item } ) => (
         
 )
 
-function getRezept() 
+const getRezept = () =>
 {
+  const list = rezeptKarten;
 
 
   db.transaction(tx => {
@@ -114,10 +115,10 @@ function getRezept()
     [],
 
     (tx,{rows}) => {
-      for(let i = 0; i < rows.length; i++)
+      for(let i = 1; i < rows.length; i++)
       {
         console.log(rows._array[i]);
-        rezeptKarten.push(rows._array[i]);
+        list.push(rows._array[i]);
       }
     },
 
@@ -129,7 +130,7 @@ function getRezept()
       )
     })
 
-    return rezeptKarten;
+    return list;
 };
 
 
@@ -152,7 +153,7 @@ function HomeScreen({ navigation }){
           <RezeptKlein item = {item}></RezeptKlein>
         </TouchableOpacity>
       )}
-      onEndReachedThreshold={10}
+      onEndReachedThreshold={100}
       keyExtractor={item => item.id}/>
       
 
@@ -200,21 +201,6 @@ function HomeScreen({ navigation }){
       elevation: 10,
       shadowColor: '#000000'
     },
-    rezeptHinzufuegen:{
-      position: 'absolute',
-      width: '90%',
-      height: 70,
-      borderRadius: 100,
-      alignItems: 'center',
-      backgroundColor: '#4ECAFF',
-      justifyContent: 'center',
-      alignSelf: 'center',
-      bottom: 20,
-      zIndex: 2,
-    },
-    plus:{
-      resizeMode: 'center',
-    }
   });
 
 
