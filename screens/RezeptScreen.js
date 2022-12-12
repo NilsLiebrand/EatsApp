@@ -69,7 +69,6 @@ function RezeptScreen({ navigation }){
     weisserHintergrund:{
         width: '90%',
         alignSelf: 'center',
-        backgroundColor: 'white',
         backgroundColor: 'rgba(200,200,200,0.5)',
         borderRadius: 25,
       },

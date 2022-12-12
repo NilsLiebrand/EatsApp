@@ -8,6 +8,8 @@ import * as SQLite from 'expo-sqlite';
 //Components
 import Hinzufuegen from '../components/Hinzufuegen';
 import { FlatList } from 'react-native-gesture-handler';
+import { ReloadInstructions } from 'react-native/Libraries/NewAppScreen';
+import { useRouteLoaderData } from 'react-router-dom';
 
 
 
@@ -130,14 +132,27 @@ const getRezept = () =>
       )
     })
 
-    return list;
+    return rezeptKarten;
 };
 
 
 
 function HomeScreen({ navigation }){
 
+  const [rezeptListe, setRezeptListe] = useState([])
+  const [refreshing, setRefreshing] = useState(false);
 
+  const onRefresh = () =>
+  {
+    //Liste Leeren
+    setRezeptListe([]);
+
+    setRefreshing(true);
+    setRezeptListe(getRezept());
+    console.log("Refresh");
+    setRefreshing(false);
+
+  }
     return(
       <SafeAreaView style={stylesHome.container}>
       <StatusBar style='auto'/>
@@ -147,14 +162,21 @@ function HomeScreen({ navigation }){
       
       <FlatList 
       style={stylesHome.scrollView}
-      data = {getRezept()}
+      data = {rezeptListe}
       renderItem={({item}) => (
         <TouchableOpacity  onPress={() =>  navigation.navigate('Rezept')}>
           <RezeptKlein item = {item}></RezeptKlein>
         </TouchableOpacity>
       )}
       onEndReachedThreshold={100}
-      keyExtractor={item => item.id}/>
+      keyExtractor={item => item.id}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
+      />
       
 
 
