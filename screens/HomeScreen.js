@@ -16,19 +16,23 @@ import { useRouteLoaderData } from 'react-router-dom';
 //Import Database
 const db = SQLite.openDatabase('db.rezepte');
 
-// db.transaction(tx => {
-//   tx.executeSql(
-//     "DROP TABLE Rezepte",
-//     [], 
-//     (tx, result) =>
-//     {
-//       console.log(result);
-//     } ,
-//     (tx, error) => console.log(error)
+function clearDatabase()
+{
+db.transaction(tx => {
+  tx.executeSql(
+    "DROP TABLE Rezepte",
+    [], 
+    (tx, result) =>
+    {
+      console.log(result);
+    } ,
+    (tx, error) => console.log(error)
     
 
-//   )
-// })
+  )
+})
+}
+//clearDatabase();
 
 db.transaction(tx => {
   tx.executeSql(
@@ -88,7 +92,7 @@ const RezeptKlein = ( { item } ) => (
           </View>
         </View>
 
-        <Text style={styles.anleitung}>{item.Anleitung}</Text>
+        <Text style={styles.anleitung} numberOfLines={4}>{item.Anleitung}</Text>
       </View>
         
 )
@@ -98,14 +102,15 @@ const getRezept = () =>
   const rezeptKarten = [
     {
          id : "100000",
-         Name: "UGUR",
-         Bild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540nilspp%252FEats/ImagePicker/4563ba8d-f5ef-435b-94a8-399058ad60aa.jpeg",
-         Zeit: "20",
-         Kalorien: "399",
-         Protein: "24",
-         Land: "Australien",
+         Name: "Chicken Tikka Masala",
+         //Bild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540nilspp%252FEats/ImagePicker/4563ba8d-f5ef-435b-94a8-399058ad60aa.jpeg",
+         Bild: "https://images.pexels.com/photos/12737917/pexels-photo-12737917.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+         Zeit: "75",
+         Kalorien: "403",
+         Protein: "45",
+         Land: "Indien",
          Zutat: "",
-         Anleitung: "jöakdjföaksjöfjasdkl",
+         Anleitung: "Place chicken pieces in a large bowl. Rub with lemon juice and enough salt. Marinate for 10 minutes in the refrigerator. Meanwhile, place garlic, ginger, cumin, coriander, garam masala, chili powder, and yogurt in a blender. Process until smooth. Add this paste to the bowl of chicken. Add in oil and mix well. Marinate for at least 30 minutes or overnight if possible.",
     },
     ];
 
@@ -176,6 +181,7 @@ function HomeScreen({ navigation }){
           onRefresh={onRefresh}
         />
       }
+      maxToRenderPerBatch={8}
       />
       
 
@@ -289,6 +295,8 @@ function HomeScreen({ navigation }){
       anleitung:{
         marginLeft: 10,
         marginTop: 10,
+        lineHeight: 22,
+        
       }
 
   });
