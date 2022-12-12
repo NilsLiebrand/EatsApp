@@ -56,19 +56,7 @@ db.transaction(tx => {
 
 //sdfsdf
 
-const rezeptKarten = [
-{
-     id : "100000",
-     Name: "UGUR",
-     Bild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540nilspp%252FEats/ImagePicker/4563ba8d-f5ef-435b-94a8-399058ad60aa.jpeg",
-     Zeit: "20",
-     Kalorien: "399",
-     Protein: "24",
-     Land: "Australien",
-     Zutat: "",
-     Anleitung: "jöakdjföaksjöfjasdkl",
-},
-];
+
 
 
 //<TouchableOpacity style={[styles.rezeptKleinBackground, styles.schattenGross]} onPress={rezept.onPress}>
@@ -105,7 +93,19 @@ const RezeptKlein = ( { item } ) => (
 
 const getRezept = () =>
 {
-  const list = rezeptKarten;
+  const rezeptKarten = [
+    {
+         id : "100000",
+         Name: "UGUR",
+         Bild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540nilspp%252FEats/ImagePicker/4563ba8d-f5ef-435b-94a8-399058ad60aa.jpeg",
+         Zeit: "20",
+         Kalorien: "399",
+         Protein: "24",
+         Land: "Australien",
+         Zutat: "",
+         Anleitung: "jöakdjföaksjöfjasdkl",
+    },
+    ];
 
 
   db.transaction(tx => {
@@ -118,7 +118,7 @@ const getRezept = () =>
       for(let i = 1; i < rows.length; i++)
       {
         console.log(rows._array[i]);
-        list.push(rows._array[i]);
+        rezeptKarten.push(rows._array[i]);
       }
     },
 
