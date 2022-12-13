@@ -49,24 +49,6 @@ db.transaction(tx => {
 
 
 
-
-
-
-
-/* <ScrollView style={stylesHome.scrollView}>
-        <RezeptKlein onPress={() =>navigation.navigate('Rezept')} rezeptName = {name}></RezeptKlein>
-        <RezeptKlein onPress={() =>navigation.navigate('Rezept')}></RezeptKlein>
-        
-        
-      </ScrollView> */
-
-//sdfsdf
-
-
-
-
-//<TouchableOpacity style={[styles.rezeptKleinBackground, styles.schattenGross]} onPress={rezept.onPress}>
-
 const RezeptKlein = ( { item } ) => (
   
     <View style={[styles.rezeptKleinBackground, styles.schattenGross]}>
@@ -97,20 +79,30 @@ const RezeptKlein = ( { item } ) => (
         
 )
 
+const ListFooter = () => {
+  //View to set in Footer
+  return (
+    <View style={{height: 300, paddingTop: 40}}>
+      <Text style={{alignSelf: 'center', color: 'grey'}}>Keine Rezepte Mehr</Text>
+    </View>
+    
+  );
+};
+
 const getRezept = () =>
 {
   const rezeptKarten = [
     {
-         id : "100000",
-         Name: "Chicken Tikka Masala",
+         id : '0',
+         Name: 'Chicken Tikka Masala',
          //Bild: "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540nilspp%252FEats/ImagePicker/4563ba8d-f5ef-435b-94a8-399058ad60aa.jpeg",
-         Bild: "https://images.pexels.com/photos/12737917/pexels-photo-12737917.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-         Zeit: "75",
-         Kalorien: "403",
-         Protein: "45",
-         Land: "Indien",
-         Zutat: "",
-         Anleitung: "Place chicken pieces in a large bowl. Rub with lemon juice and enough salt. Marinate for 10 minutes in the refrigerator. Meanwhile, place garlic, ginger, cumin, coriander, garam masala, chili powder, and yogurt in a blender. Process until smooth. Add this paste to the bowl of chicken. Add in oil and mix well. Marinate for at least 30 minutes or overnight if possible.",
+         Bild: 'https://images.pexels.com/photos/12737917/pexels-photo-12737917.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+         Zeit: '75',
+         Kalorien: '403',
+         Protein: '45',
+         Land: 'Indien',
+         Zutat: 'Hünchen',
+         Anleitung: 'Place chicken pieces in a large bowl. Rub with lemon juice and enough salt. Marinate for 10 minutes in the refrigerator. Meanwhile, place garlic, ginger, cumin, coriander, garam masala, chili powder, and yogurt in a blender. Process until smooth. Add this paste to the bowl of chicken. Add in oil and mix well. Marinate for at least 30 minutes or overnight if possible.',
     },
     ];
 
@@ -124,7 +116,6 @@ const getRezept = () =>
     (tx,{rows}) => {
       for(let i = 1; i < rows.length; i++)
       {
-        console.log(rows._array[i]);
         rezeptKarten.push(rows._array[i]);
       }
     },
@@ -144,32 +135,58 @@ const getRezept = () =>
 
 function HomeScreen({ navigation }){
 
-  const [rezeptListe, setRezeptListe] = useState([])
+  const [rezeptListe, setRezeptListe] = useState(getRezept())
+  const [filteredRezeptListe, setFilteredRezeptListe] = useState(rezeptListe)
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = () =>
   {
     //Liste Leeren
-    setRezeptListe([]);
+    setFilteredRezeptListe([]);
 
     setRefreshing(true);
-    setRezeptListe(getRezept());
-    console.log("Refresh");
+    setFilteredRezeptListe(getRezept());
     setRefreshing(false);
 
   }
+  //nimmt die Information des gedrückten Rezeptes auf und gibt es zur Ansicht RezeptScreen weiter
+  const zumRezept = (item) =>
+  {
+    navigation.navigate('Rezept', {paramKey: item, });
+
+  }
+
+  const searching = (text) =>
+  { 
+    const search = text.toString().toLowerCase()
+    //const filtered = rezeptListe.filter(name => rezeptListe.Name.includes(search))
+    //setFilteredRezeptListe(filtered);
+    if(text)
+    {
+      const filtered = rezeptListe.filter(name => rezeptListe.Name == name)
+      setFilteredRezeptListe(filtered);
+    }
+    else
+    {
+      setFilteredRezeptListe(rezeptListe);
+      console.log("Kein Text");
+
+    }
+  }
+
     return(
       <SafeAreaView style={stylesHome.container}>
       <StatusBar style='auto'/>
       
       
-      <TextInput style={[stylesHome.searchBar, stylesHome.schattenGross]}></TextInput>
+      <TextInput style={[stylesHome.searchBar, stylesHome.schattenGross]} onChangeText={(val) => searching(val)}></TextInput>
       
       <FlatList 
       style={stylesHome.scrollView}
-      data = {rezeptListe}
+      data = {filteredRezeptListe}
       renderItem={({item}) => (
-        <TouchableOpacity  onPress={() =>  navigation.navigate('Rezept')}>
+        //Rezeptkarte inside Touchable Container
+        <TouchableOpacity  onPress={() =>  zumRezept(item)}>
           <RezeptKlein item = {item}></RezeptKlein>
         </TouchableOpacity>
       )}
@@ -182,6 +199,7 @@ function HomeScreen({ navigation }){
         />
       }
       maxToRenderPerBatch={8}
+      ListFooterComponent={ListFooter}
       />
       
 
@@ -224,6 +242,8 @@ function HomeScreen({ navigation }){
       paddingTop: 120,
       //backgroundColor: '#fff',
       zIndex: 1,
+      flexGrow: 1,
+      paddingBottom: 20
     },
     schattenGross:{
       elevation: 10,

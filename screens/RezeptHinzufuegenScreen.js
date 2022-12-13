@@ -25,13 +25,13 @@ const db = SQLite.openDatabase('db.rezepte');
 
 
 function RezeptHinzufuegenScreen({navigation}){
-  const [name, setName] = useState('');
+  const [name, setName] = useState('N/A');
   const [bild, setBild] = useState('');
-  const [zeit, setZeit] = useState('');
-  const [kalorien, setKalorien] = useState('');
-  const [protein, setProtein] = useState('');
-  const [land, setLand] = useState('');
-  const [zutat, setZutat] = useState('');
+  const [zeit, setZeit] = useState('N/A');
+  const [kalorien, setKalorien] = useState('N/A');
+  const [protein, setProtein] = useState('N/A');
+  const [land, setLand] = useState('N/A');
+  const [zutat, setZutat] = useState('N/A');
   const [anleitung, setAnleitung] = useState('Kein Anleitung');
 
 
@@ -109,7 +109,7 @@ function RezeptHinzufuegenScreen({navigation}){
               <TextInput style={{width: "33%", textAlign: 'center'}} placeholder="Protein (g)" keyboardType='numeric' onChangeText={(val) => setProtein(val)}></TextInput>
             </View>
             
-            <TextInput style={{width: "33%", textAlign: 'center'}} placeholder= "Land" onChangeText={(val) => setLand(val)}></TextInput>
+            <TextInput style={{width: "33%", textAlign: 'center', paddingTop: 10}} placeholder= "Land" onChangeText={(val) => setLand(val)}></TextInput>
           </View>
   
   
