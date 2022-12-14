@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,  Alert, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, SafeAreaView, Image, TextInput, TouchableWithoutFeedback,  Alert} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 
@@ -11,6 +11,7 @@ import * as SQLite from 'expo-sqlite';
 import Zurueck from '../components/Zurueck';
 import Hinzufuegen  from '../components/Hinzufuegen';
 import { ZoomInLeft } from 'react-native-reanimated';
+import { FlatList } from 'react-native-gesture-handler';
 
 
 
@@ -20,6 +21,34 @@ import { ZoomInLeft } from 'react-native-reanimated';
 
 //Import Database
 const db = SQLite.openDatabase('db.rezepte');
+
+
+const testDaten = [
+  {
+    id : 1,      
+    zutat: "0", 
+    menge: 0,
+  },
+  {
+    id : 2,      
+  },
+  {
+    id : 3,      
+  },
+  {
+    id : 4,      
+  },
+  ];
+
+const ZutatenEingabe = ( { item } ) => (
+  <View>
+  <View style={stylesRezeptHinzufuegen.zutaten}>
+    <TextInput style={stylesRezeptHinzufuegen.Eingabe} placeholder="Zutat"></TextInput>
+  </View><View style={stylesRezeptHinzufuegen.mengen}>
+      <TextInput style={stylesRezeptHinzufuegen.Eingabe} keyboardType='numeric' placeholder="Menge in g (1 Person)"></TextInput>
+    </View>
+  </View>      
+);
 
 
 
@@ -92,12 +121,13 @@ function RezeptHinzufuegenScreen({navigation}){
 
           <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross, {height: 260}, {marginTop: 20}]}>
             
+      
             <TouchableWithoutFeedback onPress={() => takePhotoAsync()}>
-              <Image source={require('../assets/camera100px.png')} style={stylesRezeptHinzufuegen.kameraView}/>
+                <Image source={require('../assets/camera100px.png')} style={stylesRezeptHinzufuegen.kameraView}/>
             </TouchableWithoutFeedback>
 
             <TouchableWithoutFeedback onPress={() => choosePhotoAsync()}>
-              <Image source={require('../assets/folder100px.png')} style={stylesRezeptHinzufuegen.ordnerView}/>
+                <Image source={require('../assets/folder100px.png')} style={stylesRezeptHinzufuegen.ordnerView}/>
             </TouchableWithoutFeedback>
   
           </View>
@@ -113,19 +143,28 @@ function RezeptHinzufuegenScreen({navigation}){
           </View>
   
   
-          <View style={stylesRezeptHinzufuegen.informationen}></View>
-          <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross,{marginTop: 20}]}>
-            <View style={stylesRezeptHinzufuegen.zutaten}>
-              <TextInput style={stylesRezeptHinzufuegen.Eingabe} placeholder ="Zutaten" onChangeText={(val) => setZutat(val)}></TextInput>
-            </View> 
-            <View style={stylesRezeptHinzufuegen.mengen}>
-              <TextInput style={stylesRezeptHinzufuegen.Eingabe} keyboardType='numeric' placeholder ="Menge in g (1 Person)"></TextInput>
+          
+
+
+
+          <FlatList 
+            style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross, {marginTop: 20}, {marginBottom: 20}, {scrollEnabled: false}]}
+            data = {testDaten}
+            renderItem={({item}) => (
+          //Rezeptkarte inside Touchable Container
+          <ZutatenEingabe></ZutatenEingabe>
+          )}
+          />
+
+          <TouchableWithoutFeedback>
+            <View style={[stylesHinzufuegen.rezeptHinzufuegen, stylesHinzufuegen.schattenGross]}>
+                <Image source={require('../assets/Plus100px.png')} style={stylesHinzufuegen.plus}></Image>
             </View>
-          </View>
+          </TouchableWithoutFeedback>
   
   
           <View style={[stylesRezeptHinzufuegen.weisserHintergrund, stylesRezeptHinzufuegen.schattenGross, {marginTop: 20}, {height: 500}]}>
-            <TextInput style={stylesRezeptHinzufuegen.Eingabe} placeholder = "Anleitung"  onChangeText={(val) => setAnleitung(val)}></TextInput>
+            <TextInput style={stylesRezeptHinzufuegen.Eingabe} placeholder = "Anleitung"  multiline={true}onChangeText={(val) => setAnleitung(val)}></TextInput>
           </View>
         </ScrollView>
   
@@ -136,6 +175,8 @@ function RezeptHinzufuegenScreen({navigation}){
   }
 
 
+
+  //SQL OPERATIONEN (EINFÜGEN )
   function insertRezept(nameN, bildN, zeitN, kalorienN, proteinN, landN, zutatN, anleitungN)
   {
     console.log(nameN, "  ", zutatN, "  ", anleitungN, "  ",bildN);
@@ -147,6 +188,7 @@ function RezeptHinzufuegenScreen({navigation}){
 
         (tx, results) => {
           console.log(results, "   ", tx);
+          Alert.alert("SPEICHERN ERFOLGREICH");
         },
 
         (tx, error) => {
@@ -155,29 +197,6 @@ function RezeptHinzufuegenScreen({navigation}){
 
       );
     })
-
-
-    db.transaction(tx => {
-
-      tx.executeSql('SELECT* FROM Rezepte',
-  
-      [],
-  
-      (tx,{rows}) => {
-        Alert.alert("SPEICHERN ERFOLGREICH");
-         for(let a = 0; a < rows.length; a++)
-         {
-          console.log(rows._array[a]);
-         }
-      },
-  
-      (tx,error) =>{
-        console.log("Error ", error);
-        Alert.alert("Error ",error);
-      }
-  
-        )
-      })
   }
 
   
@@ -259,3 +278,23 @@ function RezeptHinzufuegenScreen({navigation}){
       alignContent: "stretch",
     },
   });
+
+  const stylesHinzufuegen = StyleSheet.create({
+  rezeptHinzufuegen:{
+    width: '90%',
+    height: 70,
+    borderRadius: 100,
+    alignItems: 'center',
+    backgroundColor: '#B5C6D2',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    
+  },
+  plus:{
+    resizeMode: 'center',
+  },
+  schattenGross:{
+    elevation: 10,
+    shadowColor: '#000000'
+  }
+});

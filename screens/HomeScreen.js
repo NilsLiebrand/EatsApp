@@ -10,6 +10,7 @@ import Hinzufuegen from '../components/Hinzufuegen';
 import { FlatList } from 'react-native-gesture-handler';
 import { ReloadInstructions } from 'react-native/Libraries/NewAppScreen';
 import { useRouteLoaderData } from 'react-router-dom';
+import { CommonActions } from '@react-navigation/native';
 
 
 
@@ -79,13 +80,12 @@ const RezeptKlein = ( { item } ) => (
         
 )
 
-const ListFooter = () => {
+const ListeEnde = () => {
   //View to set in Footer
   return (
     <View style={{height: 300, paddingTop: 40}}>
       <Text style={{alignSelf: 'center', color: 'grey'}}>Keine Rezepte Mehr</Text>
     </View>
-    
   );
 };
 
@@ -156,15 +156,23 @@ function HomeScreen({ navigation }){
 
   }
 
-  const searching = (text) =>
+  const handleSearch = text =>
   { 
-    const search = text.toString().toLowerCase()
-    //const filtered = rezeptListe.filter(name => rezeptListe.Name.includes(search))
-    //setFilteredRezeptListe(filtered);
+    const search = text.toString().toLowerCase();
+
+    //Clear Database
+    const deleteAll = 'delete all';
+    if(text == deleteAll)
+    {
+      clearDatabase();
+    }
+    //Filter Rezeptliste
     if(text)
     {
-      const filtered = rezeptListe.filter(name => rezeptListe.Name == name)
-      setFilteredRezeptListe(filtered);
+      const filteredData = rezeptListe.filter(function (item)  {
+        return item.Name.toString().toLowerCase().includes(search)
+      })
+      setFilteredRezeptListe(filteredData);
     }
     else
     {
@@ -174,12 +182,13 @@ function HomeScreen({ navigation }){
     }
   }
 
+
     return(
       <SafeAreaView style={stylesHome.container}>
       <StatusBar style='auto'/>
       
       
-      <TextInput style={[stylesHome.searchBar, stylesHome.schattenGross]} onChangeText={(val) => searching(val)}></TextInput>
+      <TextInput style={[stylesHome.searchBar, stylesHome.schattenGross]} onChangeText={(val) => handleSearch(val)}></TextInput>
       
       <FlatList 
       style={stylesHome.scrollView}
@@ -199,7 +208,7 @@ function HomeScreen({ navigation }){
         />
       }
       maxToRenderPerBatch={8}
-      ListFooterComponent={ListFooter}
+      ListFooterComponent={ListeEnde}
       />
       
 

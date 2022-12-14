@@ -52,7 +52,7 @@ function RezeptScreen({ navigation , route}){
           <View style={stylesRezept.informationen}></View>
           <View style={[stylesRezept.semiTransparent, stylesRezept.schattenGross,{marginTop: 20}]}>
             <View style={stylesRezept.zutaten}>
-              <Text style={stylesRezept.Ausgabe}>Zutaten</Text>
+              <Text style={stylesRezept.Ausgabe}>{rezept.Zutat}</Text>
   
             </View> 
             <View style={stylesRezept.mengen}>
